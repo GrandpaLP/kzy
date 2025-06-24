@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日快乐！kzy🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            animation: bounce 2s ease-in-out infinite;
+            text-align: center;
+        }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: #333;
+            transition: all 0.3s ease;
+        }
+
+        .balloon:hover {
+            transform: scale(1.2) translateY(-10px) rotate(5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            filter: brightness(1.2) saturate(1.3);
+            z-index: 10;
+        }
+
+        .balloon:hover::after {
+            height: 50px;
+            width: 3px;
+            background: #222;
+        }
+
+        .balloon.red { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52); 
+        }
+        .balloon.red:hover {
+            background: linear-gradient(135deg, #ff8787, #ff6b6b);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .balloon.blue { 
+            background: linear-gradient(135deg, #4ecdc4, #44a08d); 
+        }
+        .balloon.blue:hover {
+            background: linear-gradient(135deg, #6ee5dd, #4ecdc4);
+            box-shadow: 0 15px 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .balloon.green { 
+            background: linear-gradient(135deg, #95e1d3, #67b26f); 
+        }
+        .balloon.green:hover {
+            background: linear-gradient(135deg, #b3ead9, #95e1d3);
+            box-shadow: 0 15px 30px rgba(149, 225, 211, 0.5);
+        }
+
+        .balloon.yellow { 
+            background: linear-gradient(135deg, #fce38a, #f38ba8); 
+        }
+        .balloon.yellow:hover {
+            background: linear-gradient(135deg, #fde9a3, #fce38a);
+            box-shadow: 0 15px 30px rgba(252, 227, 138, 0.5);
+        }
+
+        .balloon.purple { 
+            background: linear-gradient(135deg, #a8edea, #fed6e3); 
+        }
+        .balloon.purple:hover {
+            background: linear-gradient(135deg, #c0f2ef, #a8edea);
+            box-shadow: 0 15px 30px rgba(168, 237, 234, 0.5);
+        }
+
+        .balloon.orange { 
+            background: linear-gradient(135deg, #ff9a9e, #fecfef); 
+        }
+        .balloon.orange:hover {
+            background: linear-gradient(135deg, #ffb1b5, #ff9a9e);
+            box-shadow: 0 15px 30px rgba(255, 154, 158, 0.5);
+        }
+
+        .balloon.gold { 
+            background: linear-gradient(135deg, #ffd700, #ffed4e); 
+        }
+        .balloon.gold:hover {
+            background: linear-gradient(135deg, #ffdd33, #ffd700);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .balloon.rainbow {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 400% 400%;
+            animation: rainbow 2s ease infinite, float 3s ease-in-out infinite;
+        }
+
+        .balloon.rainbow:hover {
+            transform: scale(1.3) translateY(-15px) rotate(-5deg);
+            animation: rainbow 0.5s ease infinite, float 3s ease-in-out infinite;
+            box-shadow: 0 20px 40px rgba(255, 0, 255, 0.6);
+        }
+
+        .special-balloon {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            animation: pulse 1s ease-in-out infinite, float 3s ease-in-out infinite;
+            transform: scale(1.1);
+        }
+
+        .special-balloon:hover {
+            transform: scale(1.4) translateY(-15px);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 20px 40px rgba(255, 215, 0, 0.3);
+            animation: pulse 0.5s ease-in-out infinite, float 3s ease-in-out infinite;
+        }
+
+        .pop-effect {
+            position: absolute;
+            pointer-events: none;
+            animation: popAnimation 0.5s ease-out forwards;
+        }
+
+        .score-popup {
+            position: absolute;
+            color: #ffd700;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+            animation: scorePopup 1.5s ease-out forwards;
+            z-index: 200;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: particleAnimation 1s ease-out forwards;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confettiAnimation 3s ease-out forwards;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(10px);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .celebration h2 {
+            color: #ff6b6b;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+            text-align: center;
+        }
+
+        .celebration p {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .restart-btn, .continue-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin: 0 10px;
+        }
+
+        .restart-btn:hover, .continue-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .super-celebration {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff6b6b 100%);
+            color: white;
+            animation: superCelebrationGlow 2s ease-in-out infinite;
+        }
+
+        .super-celebration h2 {
+            color: #ffd700;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .super-celebration p {
+            color: white;
+            font-size: 1.3rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .fireworks-show {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .big-firework {
+            position: absolute;
+            font-size: 4rem;
+            animation: bigFireworkAnimation 2s ease-out forwards;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .super-special-effects {
+            position: absolute;
+            pointer-events: none;
+            font-size: 3rem;
+            animation: superSpecialEffect 2s ease-out forwards;
+        }
+
+        .mega-sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 4rem;
+            animation: megaSparkle 3s ease-out forwards;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            50% { transform: scale(1.2); box-shadow: 0 0 40px rgba(255, 215, 0, 1); }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes popAnimation {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes scorePopup {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            50% { transform: translateY(-30px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-60px) scale(1); opacity: 0; }
+        }
+
+        @keyframes particleAnimation {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(0) translateY(-100px); opacity: 0; }
+        }
+
+        @keyframes confettiAnimation {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes superCelebrationGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.8); }
+        }
+
+        @keyframes bigFireworkAnimation {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes superSpecialEffect {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            25% { transform: scale(1.5) rotate(90deg); opacity: 1; }
+            50% { transform: scale(2) rotate(180deg); opacity: 0.8; }
+            75% { transform: scale(1.5) rotate(270deg); opacity: 0.6; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes megaSparkle {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            20% { transform: scale(1.2) rotate(72deg); opacity: 1; }
+            40% { transform: scale(1.5) rotate(144deg); opacity: 0.9; }
+            60% { transform: scale(1.8) rotate(216deg); opacity: 0.7; }
+            80% { transform: scale(1.2) rotate(288deg); opacity: 0.5; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .firework::before {
+            content: '✨';
+            font-size: 2rem;
+            animation: fireworkAnimation 1s ease-out forwards;
+        }
+
+        @keyframes fireworkAnimation {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        .heart-rain {
+            position: absolute;
+            font-size: 2rem;
+            color: #ff6b6b;
+            animation: heartRain 4s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes heartRain {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎉 生日快乐！🎂</h1>
+        </div>
+        
+        <div class="score">
+            得分: <span id="scoreValue">0</span>
+        </div>
+
+        <div class="instructions">
+            点击气球来庆祝生日！🎈
+        </div>
+
+        <div class="celebration" id="celebration">
+            <h2>🎊 太棒了！🎊</h2>
+            <p>你成功爆破了所有气球！</p>
+            <p>柯庄扬生日快乐！天天开心~🎈🎂✨</p>
+            <div>
+                <button class="continue-btn" id="continueBtn" onclick="closeCelebration()" style="display: none;">继续游戏</button>
+                <button class="restart-btn" onclick="restartGame()">再玩一次</button>
+            </div>
+        </div>
+
+        <div class="fireworks-show" id="fireworksShow"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let balloons = [];
+        let gameActive = true;
+        const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        let specialBalloonChance = 0.1;
+
+        function createBalloon() {
+            if (!gameActive) return;
+
+            const balloon = document.createElement('div');
+            
+            // 随机决定是否创建特殊气球
+            const isSpecial = Math.random() < specialBalloonChance;
+            const isRainbow = score >= 400 && Math.random() < 0.2;
+            
+            if (isRainbow) {
+                balloon.className = 'balloon rainbow special-balloon';
+            } else if (isSpecial) {
+                balloon.className = `balloon gold special-balloon`;
+            } else {
+                balloon.className = `balloon ${colors[Math.floor(Math.random() * colors.length)]}`;
+            }
+            
+            // 随机位置
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 200) + 100;
+            
+            balloon.style.left = x + 'px';
+            balloon.style.top = y + 'px';
+            balloon.style.animationDelay = Math.random() * 2 + 's';
+            
+            balloon.addEventListener('click', function(e) {
+                e.preventDefault();
+                popBalloon(balloon, e.clientX, e.clientY, isSpecial || isRainbow);
+            });
+            
+            document.querySelector('.game-container').appendChild(balloon);
+            balloons.push(balloon);
+            
+            // 气球自动消失时间延长
+            setTimeout(() => {
+                if (balloon.parentNode) {
+                    balloon.parentNode.removeChild(balloon);
+                    balloons = balloons.filter(b => b !== balloon);
+                }
+            }, 8000);
+        }
+
+        function popBalloon(balloon, x, y, isSpecial = false) {
+            // 修复分数逻辑
+            let points;
+            if (balloon.classList.contains('rainbow')) {
+                points = 150; // 彩虹气球150分
+            } else if (isSpecial) {
+                points = 50; // 特殊金色气球50分
+            } else {
+                points = 10; // 普通气球10分
+            }
+            
+            score += points;
+            document.getElementById('scoreValue').textContent = score;
+            
+            // 显示分数弹出效果
+            showScorePopup(x, y, points, isSpecial || balloon.classList.contains('rainbow'));
+            
+            // 创建爆破效果
+            createPopEffect(x, y, isSpecial || balloon.classList.contains('rainbow'));
+            createParticles(x, y, isSpecial || balloon.classList.contains('rainbow'));
+            createFirework(x, y);
+            
+            // 特殊气球的超级正反馈效果（包括彩虹气球）
+            if (isSpecial || balloon.classList.contains('rainbow')) {
+                createSuperSpecialEffects(x, y);
+                createHeartRain();
+                createMegaSparkle(x, y);
+                // 增加更多特殊效果
+                setTimeout(() => createSuperSpecialEffects(x + 50, y - 50), 300);
+                setTimeout(() => createSuperSpecialEffects(x - 50, y + 50), 600);
+            }
+            
+            // 移除气球
+            balloon.style.transform = 'scale(0)';
+            setTimeout(() => {
+                if (balloon.parentNode) {
+                    balloon.parentNode.removeChild(balloon);
+                    balloons = balloons.filter(b => b !== balloon);
+                }
+            }, 200);
+            
+            // 检查是否达到庆祝条件
+            if (score >= 1000) {
+                showSuperCelebration();
+            } else if (score >= 500 && score % 500 === 0) {
+                showCelebration();
+            }
+        }
+
+        function showScorePopup(x, y, points, isSpecial = false) {
+            const scorePopup = document.createElement('div');
+            scorePopup.className = 'score-popup';
+            scorePopup.textContent = `+${points}`;
+            scorePopup.style.left = x + 'px';
+            scorePopup.style.top = y + 'px';
+            
+            if (isSpecial) {
+                scorePopup.style.color = '#ffd700';
+                scorePopup.style.fontSize = '3rem';
+                scorePopup.style.textShadow = '0 0 10px #ffd700, 2px 2px 4px rgba(0,0,0,0.8)';
+            }
+            
+            document.querySelector('.game-container').appendChild(scorePopup);
+            
+            setTimeout(() => {
+                if (scorePopup.parentNode) {
+                    scorePopup.parentNode.removeChild(scorePopup);
+                }
+            }, 1500);
+        }
+
+        function createSuperSpecialEffects(x, y) {
+            const effects = ['🌟', '💫', '⭐', '✨', '🎆', '🎇'];
+            const effect = document.createElement('div');
+            effect.className = 'super-special-effects';
+            effect.textContent = effects[Math.floor(Math.random() * effects.length)];
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            
+            document.querySelector('.game-container').appendChild(effect);
+            
+            setTimeout(() => {
+                if (effect.parentNode) {
+                    effect.parentNode.removeChild(effect);
+                }
+            }, 2000);
+        }
+
+        function createMegaSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'mega-sparkle';
+            sparkle.textContent = '💎';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            
+            document.querySelector('.game-container').appendChild(sparkle);
+            
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            }, 3000);
+        }
+
+        function createPopEffect(x, y, isSpecial = false) {
+            const popEffect = document.createElement('div');
+            popEffect.className = 'pop-effect';
+            popEffect.style.left = x + 'px';
+            popEffect.style.top = y + 'px';
+            popEffect.textContent = isSpecial ? '🎆' : '💥';
+            popEffect.style.fontSize = isSpecial ? '4rem' : '2rem';
+            
+            document.querySelector('.game-container').appendChild(popEffect);
+            
+            setTimeout(() => {
+                if (popEffect.parentNode) {
+                    popEffect.parentNode.removeChild(popEffect);
+                }
+            }, 500);
+        }
+
+        function createParticles(x, y, isSpecial = false) {
+            const particleColors = isSpecial ? 
+                ['#ffd700', '#ffed4e', '#fff700', '#ffe135', '#ff6b6b', '#4ecdc4'] : 
+                ['#ff6b6b', '#4ecdc4', '#95e1d3', '#fce38a', '#a8edea', '#ff9a9e'];
+            
+            const particleCount = isSpecial ? 20 : 8; // 特殊气球粒子数量增加
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+                
+                const angle = (i / particleCount) * Math.PI * 2;
+                const distance = (isSpecial ? 120 : 50) + Math.random() * 80;
+                particle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+                
+                particle.style.animation = `particleAnimation ${isSpecial ? 1.5 : 1}s ease-out forwards`;
+                
+                document.querySelector('.game-container').appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, isSpecial ? 1500 : 1000);
+            }
+        }
+
+        function createFirework(x, y) {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = x + 'px';
+            firework.style.top = y + 'px';
+            
+            document.querySelector('.game-container').appendChild(firework);
+            
+            setTimeout(() => {
+                if (firework.parentNode) {
+                    firework.parentNode.removeChild(firework);
+                }
+            }, 1000);
+        }
+
+        function createHeartRain() {
+            for (let i = 0; i < 8; i++) { // 增加爱心雨数量
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-rain';
+                    heart.textContent = ['💖', '💝', '💕', '💗', '💘'][Math.floor(Math.random() * 5)];
+                    heart.style.left = Math.random() * window.innerWidth + 'px';
+                    heart.style.animationDelay = Math.random() * 1 + 's';
+                    
+                    document.querySelector('.game-container').appendChild(heart);
+                    
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.parentNode.removeChild(heart);
+                        }
+                    }, 4000);
+                }, i * 150);
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                
+                document.querySelector('.game-container').appendChild(confetti);
+                
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 3000);
+            }
+        }
+
+        function createBigFireworks() {
+            const fireworksShow = document.getElementById('fireworksShow');
+            const fireworkEmojis = ['🎆', '🎇', '✨', '💫', '🌟'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'big-firework';
+                    firework.textContent = fireworkEmojis[Math.floor(Math.random() * fireworkEmojis.length)];
+                    firework.style.left = Math.random() * window.innerWidth + 'px';
+                    firework.style.top = Math.random() * window.innerHeight + 'px';
+                    
+                    fireworksShow.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        if (firework.parentNode) {
+                            firework.parentNode.removeChild(firework);
+                        }
+                    }, 2000);
+                }, i * 300);
+            }
+        }
+
+        function showCelebration() {
+            createConfetti();
+            
+            const celebration = document.getElementById('celebration');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            celebration.querySelector('h2').textContent = '🎊 太棒了！🎊';
+            celebration.querySelector('p').textContent = '你已经达到了500分！继续挑战更高分数吧！';
+            celebration.classList.remove('super-celebration');
+            continueBtn.style.display = 'inline-block';
+            
+            setTimeout(() => {
+                celebration.style.display = 'block';
+            }, 1000);
+        }
+
+        function showSuperCelebration() {
+            gameActive = false;
+            createConfetti();
+            createBigFireworks();
+            
+            const celebration = document.getElementById('celebration');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            celebration.classList.add('super-celebration');
+            celebration.querySelector('h2').textContent = '🏆 超级棒！终极惊喜！🏆';
+            celebration.querySelector('p').textContent = '恭喜你达成了1000分的超级成就！你是真正的气球大师！🎈👑';
+            continueBtn.style.display = 'none';
+            
+            setTimeout(() => {
+                celebration.style.display = 'block';
+            }, 1000);
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebration').style.display = 'none';
+        }
+
+        function restartGame() {
+            score = 0;
+            gameActive = true;
+            document.getElementById('scoreValue').textContent = '0';
+            document.getElementById('celebration').style.display = 'none';
+            document.getElementById('celebration').classList.remove('super-celebration');
+            document.getElementById('continueBtn').style.display = 'none';
+            
+            // 清除现有气球
+            balloons.forEach(balloon => {
+                if (balloon.parentNode) {
+                    balloon.parentNode.removeChild(balloon);
+                }
+            });
+            balloons = [];
+        }
+
+        // 游戏循环 - 增加气球生成频率
+        function gameLoop() {
+            if (gameActive && Math.random() < 0.5) {
+                createBalloon();
+            }
+            
+            setTimeout(gameLoop, 800);
+        }
+
+        // 启动游戏
+        gameLoop();
+
+        // 初始气球
+        setTimeout(() => {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createBalloon, i * 400);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
